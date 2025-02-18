@@ -5,55 +5,59 @@ const SudokuSolver = require('../controllers/sudoku-solver.js');
 module.exports = function (app) {
   
   let solver = new SudokuSolver();
-
+  
   app.route('/api/check')
     .post((req, res) => {
-      const inputString = req.body.puzzle;
-      const coords = req.body.coordinate;
-      const value = req.body.value;
-      try{
-        const row = solver.splitCoords(value).row;
-        const column = solver.splitCoords(value).column;
-      if(!coords || !value || !inputString){
-        throw new Error('Required field(s) missing');
-      }else if( 1 < column ||  column > 9){
-        throw new Error('Invalid value') 
-      } else if('A' < row || row > 'I'){
-        throw new Error('Invalid coordinate') 
-      }
-
-
-      if (!inputString){
-        return res.json({ error: 'Required field missing' })
-      }
-
-      
-
-        if(solver.validate(inputString)) {
-          const chunks = solver.splitIntoChunks(inputString)
-          
-
-
+      try {
+        const inputString = req.body.puzzle;
+        const coords = req.body.coordinate;
+        let value = parseInt(req.body.value, 10);
+        solver.conflict = [];
+        
+        if (!inputString) {
+          return res.json({ error: 'Required field missing' });
         }
-      } catch(error){
-        res.json({error: error.message})
+        
+        if (!coords || value === undefined) {
+          throw new Error('Required field(s) missing');
+        }
+
+        const { rowNum, column } = solver.splitCoords(coords);
+
+        if (column < 1 || column > 9 || rowNum < 1 || rowNum > 9) {
+          throw new Error('Invalid coordinate');
+        }
+
+        if (value < 1 || value > 9) {
+          throw new Error('Invalid value');
+        }
+
+        let isValid = solver.isValidPlacement(inputString, rowNum, column, value);
+        if (isValid) {
+          res.json({valid: isValid});
+        } else {
+          res.json({valid: isValid, conflict: solver.conflict});
+        }
+
+      } catch (error) {
+        res.json({ error: error.message });
       }
     });
-    
+
   app.route('/api/solve')
     .post((req, res) => {
-      const inputString = req.body.puzzle;
+      try {
+        const inputString = req.body.puzzle;
 
-      if (!inputString){
-        return res.json({ error: 'Required field missing' })
-      }
-      try{
-        if(solver.validate(inputString)) {
-          const chunks = solver.splitIntoChunks(inputString)
-          
+        if (!inputString) {
+          return res.json({ error: 'Required field missing' });
         }
-      } catch(error){
-        res.json({error: error.message})
+
+        solver.validate(inputString);
+        res.json({ solution: solver.solve(inputString) });
+
+      } catch (error) {
+        res.json({ error: error.message });
       }
     });
 };
