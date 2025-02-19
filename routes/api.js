@@ -12,26 +12,25 @@ module.exports = function (app) {
         const inputString = req.body.puzzle;
         const coords = req.body.coordinate;
         let value = parseInt(req.body.value, 10);
-        solver.conflict = [];
-        
-        if (!inputString) {
-          return res.json({ error: 'Required field missing' });
-        }
-        
-        if (!coords || value === undefined) {
-          throw new Error('Required field(s) missing');
+        const inputVal = req.body.value;
+      
+        if (!inputString || !coords ||  !inputVal) {
+          return res.json({ error: 'Required field(s) missing' });
         }
 
+        solver.validate(inputString)
+        solver.isValueValid(value)
+
+        if(isNaN(value) || value < 1 || value > 9 ){
+          throw new Error("Invalid value")
+        }
+       
         const { rowNum, column } = solver.splitCoords(coords);
 
-        if (column < 1 || column > 9 || rowNum < 1 || rowNum > 9) {
-          throw new Error('Invalid coordinate');
+        if (rowNum === null || isNaN(column) || column < 1 || column > 9) {
+          return res.json({ error: 'Invalid coordinate' });
         }
-
-        if (value < 1 || value > 9) {
-          throw new Error('Invalid value');
-        }
-
+        
         let isValid = solver.isValidPlacement(inputString, rowNum, column, value);
         if (isValid) {
           res.json({valid: isValid});

@@ -19,6 +19,13 @@ class SudokuSolver {
     return true;
   }
 
+  isValueValid(value){
+    console.log(value)
+    if(!(value >= 1 && value <= 9)){
+      throw new Error("Invalid value")
+    }
+  }
+
   letterToNum(input) {
     const letterMap = {
       A: 1, B: 2, C: 3, D: 4, E: 5, F: 6, G: 7, H: 8, I: 9
@@ -75,6 +82,11 @@ class SudokuSolver {
     return true;
   }
 
+  checkPlacedValue(puzzleString, row, column, value){
+    let puzzleArray = puzzleString.split("")
+    return (puzzleArray[this.getIndex(row, column)] == value)
+  }
+
   isValidPlacement(puzzleString, row, column, value) {
     this.resetConflict();
     let valid = true;
@@ -82,6 +94,8 @@ class SudokuSolver {
     if (!this.checkRowPlacement(puzzleString, row, column, value)) valid = false;
     if (!this.checkColPlacement(puzzleString, row, column, value)) valid = false;
     if (!this.checkRegionPlacement(puzzleString, row, column, value)) valid = false;
+
+    if(this.checkPlacedValue(puzzleString, row, column, value)) valid = true
 
     return valid;
   }
