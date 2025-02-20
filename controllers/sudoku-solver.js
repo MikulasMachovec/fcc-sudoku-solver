@@ -20,7 +20,6 @@ class SudokuSolver {
   }
 
   isValueValid(value){
-    console.log(value)
     if(!(value >= 1 && value <= 9)){
       throw new Error("Invalid value")
     }
