@@ -9,12 +9,16 @@ class SudokuSolver {
 
   validate(puzzleString) {
     const pattern = /^[1-9.]+$/;
-    
-    if (!pattern.test(puzzleString)) {
-      return false
+
+    if (puzzleString.length !== 81){
+      return { valid: false, message: "length"}
     }
     
-    return true;
+    if (!pattern.test(puzzleString)) {
+      return { valid: false, message : "pattern" }
+    }
+    
+    return { valid: true };
   }
 
   isValueValid(value){

@@ -17,13 +17,14 @@ module.exports = function (app) {
         if (!inputString || !coords ||  !inputVal) {
           return res.json({ error: 'Required field(s) missing' });
         }
-    
-        if (inputString.length !== 81){
+        
+        const {valid, message } = solver.validate(inputString);
+
+        if (!valid && message === "length"){
           return res.json({error: 'Expected puzzle to be 81 characters long'})
         }
-        solver.validate(inputString)
-    
-        if(!solver.validate(inputString)){
+        
+        if(!valid && message === "pattern"){
           return res.json({error: 'Invalid characters in puzzle'});
         }
         
@@ -62,13 +63,13 @@ module.exports = function (app) {
           return res.json({ error: 'Required field missing' });
         }
 
-        if (inputString.length !== 81){
+        const {valid, message } = solver.validate(inputString);
+
+        if (!valid && message === "length"){
           return res.json({error: 'Expected puzzle to be 81 characters long'})
         }
-
-        solver.validate(inputString)
-    
-        if(!solver.validate(inputString)){
+        
+        if(!valid && message === "pattern"){
           return res.json({error: 'Invalid characters in puzzle'});
         }
         

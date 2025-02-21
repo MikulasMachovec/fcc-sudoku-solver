@@ -8,17 +8,18 @@ suite('Unit Tests', () => {
     suite('String test', () => {
         test('valid puzzle string of 81 characters',() => {
             const testPuzzle = "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37."
-            assert.strictEqual(solver.validate(testPuzzle), true);
+            assert.deepEqual(solver.validate(testPuzzle), {valid : true});
         });
 
         test('puzzle string with invalid characters',() => {
             const testPuzzle = "1A5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37."
-            assert.throws(() => solver.validate(testPuzzle), Error, "Invalid characters in puzzle");
+            assert.deepStrictEqual(solver.validate(testPuzzle),{ valid: false, message: "pattern"} )
         });
 
         test('puzzle string that is not 81 characters in length',() => {
             const testPuzzle = "1.5..2.84..63.12.7.2..5.....9..1...."
-            assert.throws(() => solver.validate(testPuzzle), Error, "Expected puzzle to be 81 characters long");
+            assert.deepStrictEqual(solver.validate(testPuzzle), {valid: false, message: "length" })
+            
         });
     });
 
@@ -59,12 +60,12 @@ suite('Unit Tests', () => {
         const testPuzzle = "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37."
         const testPuzzleSolution = "135762984946381257728459613694517832812936745357824196473298561581673429269145378"
         test('valid puzzle ',() => {
-            assert.strictEqual(solver.validate(testPuzzle), true);
+            assert.deepEqual(solver.validate(testPuzzle), {valid : true});
         });
 
         test('Invalid puzzle',() => {
             const invalidTestPuzzle = "5.1.9...6.9...5...1..3.6.2.5...1...3.6.2.8...9...6...4.7.2.5..4...7...8.3...9.1.6."
-            ifassert.throws(() => solver.validate(invalidTestPuzzle), Error, "Expected puzzle to be 81 characters long"); 
+            assert.deepStrictEqual(solver.validate(invalidTestPuzzle), {valid : false, message: "length"}); 
         });
     
         test('valid puzzle with solution ',() => {
