@@ -9,20 +9,19 @@ class SudokuSolver {
 
   validate(puzzleString) {
     const pattern = /^[1-9.]+$/;
-    if (puzzleString.length !== 81) {
-      throw new Error('Expected puzzle to be 81 characters long');
-    }
-
+    
     if (!pattern.test(puzzleString)) {
-      throw new Error('Invalid characters in puzzle');
+      return false
     }
+    
     return true;
   }
 
   isValueValid(value){
     if(!(value >= 1 && value <= 9)){
-      throw new Error("Invalid value")
+      return false
     }
+    return true
   }
 
   letterToNum(input) {
@@ -124,8 +123,9 @@ class SudokuSolver {
     if (backtrack()) {
       return puzzleArray.join("");
     } else {
-      throw new Error("Puzzle cannot be solved");
+      return false;
     }
+
   }
 }
 
